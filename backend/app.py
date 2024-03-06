@@ -70,7 +70,7 @@ def get_pids_from_title(json_file, title):
 
     if title.lower() in paper_data:
         # Access the array of PIDs corresponding to the title
-        print("A\n")
+        # print("A\n")
         matching_pids = paper_data[title.lower()]
 
     return matching_pids
@@ -87,12 +87,12 @@ def get_data_for_pid(pid):
     # Construct the file path for the PID
     abs_file_path = os.path.join(data_directory, f'{pid}.abs')
     # Check if the file exists
-    print(pid)
+    # print(pid)
     if os.path.exists(abs_file_path):
         # Read the data from the file
         with open(abs_file_path, 'r') as abs_file:
             data = abs_file.read()
-            print(data)
+            # print(data)
         return data
     else:
         return None
@@ -132,53 +132,36 @@ def search_results():
 @app.route('/api/paper',methods=["GET"])
 def paper():
     query=request.args.get('query')
-    level1ref=[]
-    level2ref=[]
-    level1cite=[]
-    level2cite=[]
+    level1ref = set()
+    level2ref = set()
+    level1cite = set()
+    level2cite = set()
 
-    file='../cit-HepTh.txt/Cit-HepTh.txt'
-    with open(file,'r') as f:
+    file_path = '../cit-HepTh.txt/Cit-HepTh.txt'
+    with open(file_path, 'r') as f:
         for line in f:
-        # Split the line into ID and number
-            pid1,pid2 = line.strip().split('\t')
-        # Store the ID and number in the dictionary
-            if query==pid1:
-                level1ref.append(pid2)
-            elif query==pid2:
-                level1cite.append(pid1)
+            pid1, pid2 = line.strip().split('\t')
+            if query == pid1:
+                level1ref.add(pid2)
+            elif query == pid2:
+                level1cite.add(pid1)
 
-    with open(file, 'r') as f:
+    with open(file_path, 'r') as f:
         for pid in level1ref:
-        # Reset file cursor to the beginning of the file
-            f.seek(0)
-        
-        # Iterate through each line in the file
             for line in f:
-                # Split the line into ID and number
                 pid1, pid2 = line.strip().split('\t')
-            
-            # Check if pid1 matches with the current pid in level1ref
                 if pid1 == pid:
-                # Print the line where the match is found
-                    level2ref.append(pid2)
-    with open(file, 'r') as f:
-        for pid in level1cite:
-        # Reset file cursor to the beginning of the file
-            f.seek(0)
-        
-        # Iterate through each line in the file
-            for line in f:
-                # Split the line into ID and number
-                pid1, pid2 = line.strip().split('\t')
-            
-            # Check if pid1 matches with the current pid in level1ref
-                if pid2 == pid:
-                # Print the line where the match is found
-                    level2cite.append(pid1)
+                    level2ref.add(pid2)
 
-    ref=level1ref+level2ref
-    cite=level1cite+level2cite
+    with open(file_path, 'r') as f:
+        for pid in level1cite:
+            for line in f:
+                pid1, pid2 = line.strip().split('\t')
+                if pid2 == pid:
+                    level2cite.add(pid1)
+
+    ref=list(level1ref.union(level2ref))
+    cite=list(level1cite.union(level2cite))
     refdatalist=[]
     citedatalist=[]
     for pid in ref:
@@ -189,7 +172,7 @@ def paper():
         data=get_data_for_pid(pid)
         if data is not None:
             citedatalist.append(parse_paper_data(data))
-    # print("afff",refdatalist,"cff",citedatalist)
+    print("afff",ref,"cff",cite)
     querydata=parse_paper_data(get_data_for_pid(query))
     return jsonify({'query':querydata,'reflist':refdatalist,'citelist':citedatalist})
 

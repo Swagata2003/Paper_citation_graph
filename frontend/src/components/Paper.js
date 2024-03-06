@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { DataSet } from 'vis-data/peer';
 import { Network } from 'vis-network/peer';
+import './style.css';
 
 export default function Paper() {
     const host = "http://localhost:5000";
     const { query } = useParams();
     const [paperData, setPaperData] = useState(null);
     const [graphData, setGraphData] = useState(null);
+    const [info, setinfo] = useState(null)
 
     const getYearFromPid = (pid) => {
         if (pid[0] === '9') {
@@ -41,6 +43,7 @@ export default function Paper() {
 
                 // Update paperData state with fetched data
                 setPaperData(data);
+                setinfo(data.query);
             } catch (error) {
                 console.error('Error:', error);
             }
@@ -74,7 +77,7 @@ export default function Paper() {
 
             // Add the sorted items back to refNodes
             refNodesArray.forEach(item => refNodes.add(item));
-            
+
             // Sort citNodes
             const citNodesArray = citNodes.get();
 
@@ -88,10 +91,11 @@ export default function Paper() {
 
             // Add the sorted items back to refNodes
             citNodesArray.forEach(item => citNodes.add(item));
-           
+
 
             // Create nodes DataSet
             const nodes = new DataSet([...refNodes.get(), ...citNodes.get(), ...(queryNode ? [queryNode] : [])]);
+
             console.log(nodes._data)
             // edges
             const citEdges = citNodes.get().map(citNode => ({ from: citNode.id, to: queryNode.id }));
@@ -107,7 +111,7 @@ export default function Paper() {
         if (graphData) {
             // Initialize a new network
             const container = document.getElementById('graph-container');
-            const network = new Network(container, graphData, {
+            const options = {
                 edges: {
                     arrows: {
                         to: true // This specifies that edges should have arrows pointing to the 'to' node
@@ -115,16 +119,115 @@ export default function Paper() {
                 },
                 layout: {
                     hierarchical: {
-                        direction: 'UD', // This specifies the direction of the hierarchical layout (up-down)
+                        direction: 'DU', // This specifies the direction of the hierarchical layout (up-down)
+                        sortMethod: 'directed', // Arrange nodes according to the direction of the edges
+                        // Adjust spacing between nodes
+                        levelSeparation: 200, // Adjust separation between levels
                     }
                 }
+            };
+
+            const network = new Network(container, graphData, options);
+            network.on('click', (event) => {
+                const { nodes } = event;
+                if (nodes.length === 1) {
+                    const nodeId = nodes[0];
+                    const clickedNode = graphData.nodes.get(nodeId);
+                    
+                    // Search for clicked node's ID in paperData
+                    const nodeInfo = findNodeInPaperData(clickedNode.id);
+                    setinfo(nodeInfo);
+                }
             });
+            const findNodeInPaperData = (nodeId) => {
+                // Search in reflist
+                const refNode = paperData.reflist.find(item => item.pid === nodeId);
+                if (refNode) return refNode;
+            
+                // Search in citelist
+                const citNode = paperData.citelist.find(item => item.pid === nodeId);
+                if (citNode) return citNode;
+            
+                // Search in query
+                if (paperData.query.pid === nodeId) return paperData.query;
+            
+                return null;
+            };
         }
     }, [graphData]);
 
     return (
-        <div>
-            <div id="graph-container" style={{ width: '100%', height: '600px' }}></div>
+        <div style={{ display: 'flex', maxHeight: '40em' }}>
+            <div className='leftbox' style={{ flex: 1.25, overflow: 'auto' }}>
+                {/* query node */}
+                {paperData != null && (<div className="card" style={{ margin: '1em 0em 0em 1em' }} >
+                    <h5 className="card-header">
+                        Seed Node
+                    </h5>
+                    <ul className="list-group list-group-flush">
+                        <li className="list-group-item">
+                        <h6 style={{color:'#0d0d75'}}>{paperData.query.title.length<=35?paperData.query.title:paperData.query.title.substring(0, 32)+'...'}</h6>
+                        <p style={{color:'green'}}>{paperData.query.authors}</p>
+                        </li>
+                    </ul>
+                </div>)}
+                {/*  */}
+                {paperData != null && paperData.reflist.length > 0 ? (
+                    <div className="card" style={{ margin: '1em 0em 0em 1em' }} >
+                        <h5 className="card-header">
+                            Reference Paper List
+                        </h5>
+                        <ul className="list-group list-group-flush">
+                            {paperData.reflist.map((item, index) => (
+                                <li key={index} className="list-group-item">
+                                    <h6 style={{color:'#0d0d75'}}>{item.title.length <= 35 ? item.title : item.title.substring(0, 32) + '...'}</h6>
+                                    <p style={{color:'green'}}>{item.authors}</p>
+                                </li>
+                            ))
+
+                            }
+                        </ul>
+                    </div>
+
+                ) : (
+                    <p>No ref result</p>
+                )
+                }
+                
+                {paperData != null && paperData.citelist.length > 0 ? (
+                    <div className="card" style={{ margin: '1em 0em 0em 1em' }} >
+                    <h5 className="card-header">
+                        Cited Paper List
+                    </h5>
+                    <ul className="list-group list-group-flush">
+                        {paperData.citelist.map((item, index) => (
+                            <li key={index} className="list-group-item">
+                                <h6 style={{color:'#0d0d75'}}>{item.title.length <= 35 ? item.title : item.title.substring(0, 32) + '...'}</h6>
+                                <p style={{color:'green'}}>{item.authors}</p>
+                            </li>
+                        ))
+
+                        }
+                    </ul>
+                </div>
+
+                ) : (
+                    <p>No cite result</p>
+                )
+
+                }
+            </div>
+            <div id="graph-container" style={{ width: '100%', height: '600px', flex: 3 }}></div>
+            {info != null && (
+                <div className='rightbox' style={{ flex: 1.5,borderLeft: '1px solid #ccc' }}>
+                    <div style={{margin:'1em 0.5em 0em 1em'}}>
+                        <h5><strong>{info.title != null ? info.title : ' '}</strong></h5>
+                        <p><strong>Author:</strong>{info.authors != null ? info.authors : ' '}</p>
+                        <p><strong>Info:</strong>{info.body != null ? info.body : ' '}</p>
+                    </div>
+                </div>
+            )
+            }
         </div>
     );
 }

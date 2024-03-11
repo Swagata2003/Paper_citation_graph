@@ -133,9 +133,9 @@ export default function Paper() {
                 layout: {
                     randomSeed: 2, // Set a specific random seed for consistent random layouts
                 },
-                edges: {
-                    arrows: {
-                        to: true // This specifies that edges should have arrows pointing to the 'to' node
+                nodes:{
+                    font:{
+                        color:'black'
                     }
                 }
 
@@ -199,8 +199,13 @@ export default function Paper() {
                     highlight: {
                         border: 'black' // Border color when highlighted remains black
                     },
-
                 }
+                // let nd=network.body.nodes[node.id]
+                // nd.setOptions({
+                //     font: {
+                //       color: Color> 170?'black':'white'
+                //     }
+                //   });
                 // network.body.nodes[node.id].options.label = `<div style="position: relative; top: -20px;">${node.label}</div>`;
 
             });
@@ -304,7 +309,7 @@ export default function Paper() {
             </div>
             <div style={{ flex: 3, position: 'relative' }}>
                 <div id="graph-container" style={{ border: '1px solid black', height: '37em', marginTop: '1em' }}></div>
-                <div style={{ margin: '1em', width: '100%' }}>
+                <div style={{ marginTop: '0.5em', width: '100%' }}>
                     <label htmlFor="maxNodesSlider">Max Nodes:</label>
                     <input
                         type="range"
@@ -323,7 +328,9 @@ export default function Paper() {
                 info != null && (
                     <div style={{ width: '30%', marginTop: '1em' }}>
                         <h5><strong>{info.title != null ? info.title : ' '}</strong></h5>
+                        <p>{info.comments != null ? info.comments : ' '}</p>
                         <p><strong>Author:</strong>{info.authors != null ? info.authors : ' '}</p>
+                        <p><strong>Journal-ref:</strong>{info.journal != null ? info.journal : ' '}</p>
                         <p><strong>Info:</strong>{info.body != null ? info.body : ' '}</p>
                     </div>
                 )

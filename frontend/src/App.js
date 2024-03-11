@@ -3,7 +3,7 @@ import './App.css';
 import Home from './components/Home';
 import Navbar from './components/Navbar';
 import Searchresult from './components/Searchresult';
-import Paper from './components/Paper';
+import Paper from './components/Paper'
 import Demo from './components/Demo'
 import {
   BrowserRouter as Router,

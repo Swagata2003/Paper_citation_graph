@@ -25,11 +25,24 @@ def parse_paper_data(data):
     title_match = re.search(r'Title: (.+)', data)
     if title_match:
         paper_info['title'] = title_match.group(1)
+    #journal match
+    journal_match=re.search(r'Journal-ref: (.+)',data)
+    if journal_match:
+        paper_info['journal']=journal_match.group(1)
 
     # Extract authors
-    authors_match = re.search(r'Authors: (.+)', data)
+    authors_match = re.search(r'Authors?: (.+)', data)
     if authors_match:
-        paper_info['authors'] = authors_match.group(1)
+        authors = authors_match.group(1)
+        paper_info['authors'] =authors
+    else:
+        authors_match = re.search(r'Author: (.+)', data)
+        if authors_match:
+            authors = authors_match.group(1)
+            paper_info['authors'] =authors
+        else:
+            paper_info['authors'] =" "
+     
 
     # Extract comments
     comments_match = re.search(r'Comments: (.+)', data)
@@ -37,30 +50,16 @@ def parse_paper_data(data):
         paper_info['comments'] = comments_match.group(1)
 
     # Extract body
-    body_match = re.search(r'(?<=\\)[^\\]+(?=\\)', data, re.DOTALL)
-    if body_match:
-        paper_info['body'] = body_match.group(0).strip()
+    substring=data.split("\\")
+    paper_info['body'] = substring[4]
+    print(paper_info)
 
     return paper_info
 def getfolder(pid):
-    if pid[0]=='9' and pid[1]=='5':
-        return '1995'
-    if pid[0]=='9' and pid[1]=='6':
-        return '1996'
-    if pid[0]=='9' and pid[1]=='7':
-        return '1997'
-    if pid[0]=='9' and pid[1]=='8':
-        return '1998'
-    if pid[0]=='9' and pid[1]=='9':
-        return '1999'
-    if pid[0]=='0' and pid[1]=='0':
-        return '2000'
-    if pid[0]=='0' and pid[1]=='1':
-        return '2001'
-    if pid[0]=='0' and pid[1]=='2':
-        return '2002'
-    if pid[0]=='0' and pid[1]=='3':
-        return '2003'
+    if pid[0]=='9':
+        return '199'+pid[1]
+    if pid[0]=='0':
+        return '200'+pid[1]
     return None
 def get_pids_from_title(json_file, title):
     matching_pids = []
@@ -141,6 +140,8 @@ def paper():
     with open(file_path, 'r') as f:
         for line in f:
             pid1, pid2 = line.strip().split('\t')
+            pid1 = pid1.zfill(7)
+            pid2 = pid2.zfill(7)
             if query == pid1:
                 level1ref.add(pid2)
             elif query == pid2:
@@ -150,6 +151,9 @@ def paper():
         for pid in level1ref:
             for line in f:
                 pid1, pid2 = line.strip().split('\t')
+                pid1 = pid1.zfill(7)
+                pid2 = pid2.zfill(7)
+
                 if pid1 == pid:
                     level2ref.add(pid2)
 
@@ -157,6 +161,8 @@ def paper():
         for pid in level1cite:
             for line in f:
                 pid1, pid2 = line.strip().split('\t')
+                pid1 = pid1.zfill(7)
+                pid2 = pid2.zfill(7)
                 if pid2 == pid:
                     level2cite.add(pid1)
 
@@ -172,7 +178,7 @@ def paper():
         data=get_data_for_pid(pid)
         if data is not None:
             citedatalist.append(parse_paper_data(data))
-    print("afff",ref,"cff",cite)
+    # print("afff",ref,"cff",cite)
     querydata=parse_paper_data(get_data_for_pid(query))
     return jsonify({'query':querydata,'reflist':refdatalist,'citelist':citedatalist})
 

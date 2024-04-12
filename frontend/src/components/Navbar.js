@@ -5,18 +5,15 @@ export default function Navbar() {
         <div>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className="container-fluid">
-                    <a className="navbar-brand" href="#">Navbar</a>
+
+                    
+                    <a className="navbar-brand d-flex" href="#" style={{gap:'1em'}}>
+                    <img src="https://cdn-icons-png.flaticon.com/256/957/957642.png" alt="" style={{width:'1.7em'}}/>
+                        <h4>R<sup>4</sup> LitGraphs : Retrieve Readable and Relevant Graphs for Roadmapping Literature Review </h4></a>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
                     </button>
-                    <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-                        <div className="navbar-nav">
-                            <a className="nav-link active" aria-current="page" href="#">Home</a>
-                            <a className="nav-link" href="#">Features</a>
-                            <a className="nav-link" href="#">Pricing</a>
-                            <a className="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                        </div>
-                    </div>
+                    
                 </div>
             </nav>
         </div>

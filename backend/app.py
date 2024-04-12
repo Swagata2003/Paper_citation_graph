@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for,jsonify
 import json
 import sys
 import os
+import math
 import re
 from typing import Any
 from flask_cors import CORS
@@ -52,7 +53,7 @@ def parse_paper_data(data):
     # Extract body
     substring=data.split("\\")
     paper_info['body'] = substring[4]
-    print(paper_info)
+    
 
     return paper_info
 def getfolder(pid):
@@ -109,23 +110,19 @@ def search_results():
     query = request.args.get('query')
     if not query:
         return jsonify({'error': 'Query parameter is missing or empty'}), 400
-    print(query)
-    # You can process the search query here
-    # For simplicity, let's just render the search results template with the query
-    print(query)
-    # meta_directory = "./cit-HepTh-abstracts"
+    
 
     jsontitle_file = './pid_title.json'
     pid=0
     listofpids = get_pids_from_title(jsontitle_file, query)
-    print(listofpids)
+   
     data_list = []
     for pid in listofpids:
         data = get_data_for_pid(pid)
         parse=parse_paper_data(data)
         if parse:
             data_list.append(parse)
-    # print(data_list)
+    
     return jsonify({'query':query,'data_list':data_list})
 
 @app.route('/api/paper',methods=["GET"])
@@ -182,7 +179,55 @@ def paper():
     querydata=parse_paper_data(get_data_for_pid(query))
     return jsonify({'query':querydata,'reflist':refdatalist,'citelist':citedatalist})
 
+@app.route('/api/getcitationno', methods=["GET"])
+def getcitationno():
+    pids = request.args.get('query')
+    results = {}
 
+    if pids:
+        pids_list = pids.split(',')  # Split comma-separated string into a list of PIDs
+        with open('metrics.json', 'r') as f:
+            data = json.load(f)
+        for pid in pids_list:
+            if pid in data:  # Check if the PID exists in the metrics data
+                results[pid] = data[pid]['total']
+    else:
+        results.append("No PIDs provided")  # Handle case when no PIDs are provided in the query
+
+    return jsonify(results)
+
+@app.route('/api/getmaxciteyr',methods=["GET"])
+def getmaxciteyr():
+    pids = request.args.get('query')
+    results = {}
+
+    if pids:
+        pids_list = pids.split(',')  # Split comma-separated string into a list of PIDs
+        with open('metrics.json', 'r') as f:
+            data = json.load(f)
+        for pid in pids_list:
+            if pid in data:  # Check if the PID exists in the metrics data
+                results[pid] = data[pid]['maxyr']
+    else:
+        results.append("No PIDs provided")  # Handle case when no PIDs are provided in the query
+
+    return jsonify(results)
+@app.route('/api/getpagerank',methods=["GET"])
+def getpagerank():
+    pids=request.args.get('query')
+    result={}
+    if pids:
+        pids_list = pids.split(',')
+        with open('page_ranks.json','r') as f:
+            data=json.load(f)
+        for pid in pids_list:
+            if pid in data:
+                # print(data[pid]," ")
+                result[pid]=math.log(data[pid]['score'])
+    else:
+        result.append("No PIDs provided")  # Handle case when no PIDs are provided in the query
+
+    return jsonify(result)
     
 
 if __name__ == '__main__':

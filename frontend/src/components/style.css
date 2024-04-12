@@ -11,3 +11,21 @@
   border-top: 5px dotted black;
   line-height: 80%;
 }
+.card-body:hover{
+  background-color: #e1f6ff85;
+}
+
+.box {
+  height: 100px;
+  border: 2px solid black;
+  line-height: 100px;
+  font-size: 20px;
+}
+
+.box1 {
+  background-color: red;
+}
+
+.box2 {
+  background-color: blue;
+}

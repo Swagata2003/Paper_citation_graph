@@ -54,11 +54,14 @@ export default function Searchresult() {
 
     return (
         <div>
+            <div className='fs-4' style={{fontWeight:500,marginTop:'1em',marginLeft:'5.5em'}}>
+                Choose a paper to build a graph : 
+            </div>
             {results.length > 0 ? (
                 <div className="card-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '1em' }}>
                     {results.map((item, index) => (
-                        <div key={index} className="card mb-3" style={{ minWidth: '80em', cursor: 'pointer' }} onClick={(e) => handleClick(item.pid,e)}>
-                            <div className="card-body">
+                        <div key={index} className="card mb-3" style={{ minWidth: '80em', cursor: 'pointer',border:'white'}} onClick={(e) => handleClick(item.pid,e)}>
+                            <div className="card-body" style={{boxShadow: 'rgba(0, 0, 0, 0.2) 0px 2px 4px'}}>
                                 <h5 className="card-title">{item.title}</h5>
                                 <p className="card-text">{item.authors}</p>
                                 {/* <a href="#" className="card-link">Card link</a>

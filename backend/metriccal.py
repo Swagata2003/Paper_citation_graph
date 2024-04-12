@@ -23,18 +23,23 @@ for pid,data in json_data.items():
 
     if year is not None:
         total=sum(data)
-        maxcite=max(data)
+        maxcite=0
+        maxcityr=year
         c5= data[year-minyr+5] if year - minyr+ 5 < len(data) else -1
         c10=data[year-minyr+10] if year-minyr+10<len(data)else -1
         
         mean=total/(maxyr-year+1)
-
+        for i in range(0,12) :
+            if data[i] > maxcite:
+                maxcityr=1992+i
+                maxcite=data[i]
         citation[pid]={
             'total': total,
             'c5': c5,
             'c10': c10,
             'mean': mean,
-            'max': maxcite
+            'max': maxcite,
+            'maxyr':maxcityr
         }
 with open('metrics.json', 'w') as outfile:
     json.dump(citation, outfile, indent=4)

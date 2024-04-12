@@ -21,7 +21,7 @@ function App() {
           <Route exact path="/" element={<Home/>}></Route>
           <Route exact path="/searchresults/:query" element={<Searchresult/>}></Route>
           <Route eaxct path="/paper/:query" element={<Paper/>}></Route>
-          <Route exact path="/demo" element={<Demo/>}></Route>
+          <Route exact path="/demo/:query" element={<Demo/>}></Route>
         </Routes>
       </div>
     </Router>

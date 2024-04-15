@@ -3,7 +3,7 @@ import { GraphCanvas } from 'reagraph'; // Import GraphCanvas from reagraph
 import { useParams } from 'react-router-dom';
 
 export default function Demo() {
-    const host = "http://localhost:5000";
+    const host = "https://papercitation-backend4.onrender.com";
     const { query } = useParams();
     const [paperData, setPaperData] = useState(null);
     const [info, setinfo] = useState(null);

@@ -3,7 +3,7 @@ import Navbar from './Navbar'
 import { useNavigate } from 'react-router-dom'
 
 export default function Home() {
-    const host="http://localhost:5000"
+    const host="https://papercitation-backend4.onrender.com"
     const [query,setQuery]=useState('')
     const navigate=useNavigate()
     const handlesubmit=(event)=>{

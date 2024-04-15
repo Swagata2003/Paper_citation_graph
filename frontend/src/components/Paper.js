@@ -12,15 +12,17 @@ import Trajectory from './Heuristic/Trajectory';
 import Referencetree from './Referencetree';
 import Citationtree from './Citationtree';
 import Pagerank from './Pagerank';
+import Loader from './Loader';
 // import { createDataset } from 'myDatasetLibrary';
 
 export default function Paper() {
-    const host = "http://localhost:5000";
+    const host = "https://papercitation-backend4.onrender.com";
     const { query } = useParams();
     const [paperData, setPaperData] = useState(null);
     const [graphData, setGraphData] = useState(null);
     const [info, setinfo] = useState(null)
     const [maxNodes, setMaxNodes] = useState(100);
+    const [isLoading, setIsLoading] = useState(true);
     const [selectedOption, setSelectedOption] = useState('layer');
 
 
@@ -63,6 +65,8 @@ export default function Paper() {
                 setinfo(data.query);
             } catch (error) {
                 console.error('Error:', error);
+            }finally {
+                setIsLoading(false); // Hide loader
             }
         };
 
@@ -76,6 +80,11 @@ export default function Paper() {
 
     return (
         <div>
+        {isLoading ? ( // Display loader if isLoading is true
+            <Loader />
+        ) : (
+            <div>
+                 <div>
             <div className='checkbox' style={{
                      display: 'flex',
                      flexDirection: 'row',
@@ -333,6 +342,9 @@ export default function Paper() {
                 </div>
             </div >
         </div>
+            </div>
+        )}
+    </div>
 
     );
 }

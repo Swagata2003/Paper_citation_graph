@@ -10,7 +10,7 @@ export default function Range(props) {
 
     const [citcount, setCitcount] = useState({});
     const [filteredPIDs, setFilteredPIDs] = useState([]);
-    const host = "http://localhost:5000";
+    const host = "https://papercitation-backend4.onrender.com";
 
     const getYearFromPid = (pid) => {
         if (pid[0] === '9') {

@@ -73,7 +73,7 @@ export default function Trajectory(props) {
       // Create citNodes DataSet
       const citNodes = new DataSet(paperData.citelist.map(item => ({ id: item.pid, label: author(item.authors) + " et al." + getYearFromPid(item.pid), label2: item.title, year: getYearFromPid(item.pid), x: 0, y: 0 })));
 
-      const queryNode = { id: paperData.query.pid, label: paperData.query.pid, label2: author(paperData.query.authors) + " et al." + getYearFromPid(paperData.query.pid), year: getYearFromPid(paperData.query.pid), x: 0, y: 0 };
+      const queryNode = { id: paperData.query.pid, label2: paperData.query.pid, label: author(paperData.query.authors) + " et al." + getYearFromPid(paperData.query.pid), year: getYearFromPid(paperData.query.pid), x: 0, y: 0 };
 
       const nodes = new DataSet([...refNodes.get(), ...citNodes.get(), ...(queryNode ? [queryNode] : [])]);
       const citEdges = citNodes.get().map(citNode => ({ from: citNode.id, to: queryNode.id }));

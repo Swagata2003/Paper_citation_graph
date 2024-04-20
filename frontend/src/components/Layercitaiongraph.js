@@ -48,7 +48,7 @@ export default function Layercitaiongraph(props) {
       // Create citNodes DataSet
       const citNodes = new DataSet(paperData.citelist.map(item => ({ id: item.pid, label: "<b>"+author(item.authors)+" et al."+getYearFromPid(item.pid)+"</b>", label2: item.title, year: getYearFromPid(item.pid), x: 0, y: 0 })));
 
-      const queryNode = { id: paperData.query.pid, label: paperData.query.pid, label2: paperData.query.pid, year: getYearFromPid(paperData.query.pid), x: 0, y: 0 };
+      const queryNode = { id: paperData.query.pid, label: "<b>"+author(paperData.query.pid)+" et al."+getYearFromPid(paperData.query.pid)+"</b>", label2: paperData.query.pid, year: getYearFromPid(paperData.query.pid), x: 0, y: 0 };
       console.log(Array.from(refNodes._data))
       console.log(Array.from(citNodes._data))
       // Sort refNodes

@@ -226,10 +226,10 @@ export default function Paper() {
                             onChange={handleRadioChange}
                         />
                         <label className="form-check-label" htmlFor="venueRadio">
-                        Venue impact
+                        Similarity Score
                         </label>
                     </div>
-                    <div className="form-check">
+                    {/* <div className="form-check">
                         <input
                             className="form-check-input"
                             type="radio"
@@ -242,7 +242,7 @@ export default function Paper() {
                         <label className="form-check-label" htmlFor="authorRadio">
                             Author impact
                         </label>
-                    </div>
+                    </div> */}
             </div>
             <div style={{ display: 'flex', maxHeight: '40em', gap: '1em' }}>
                 <div className='leftbox' style={{ flex: 1.8, overflow: 'auto' }}>

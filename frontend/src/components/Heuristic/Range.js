@@ -37,7 +37,8 @@ export default function Range(props) {
         const firstAuthorName = extractFirstAuthorName(authorsString);
         const [firstAuthorTitle, ...rest] = firstAuthorName.split(' '); // Split the first author's name by space
         const restOfName = rest.join(' ');
-        return restOfName;
+        if(restOfName!=null)return restOfName;
+    return "";
     }
 
     useEffect(() => {

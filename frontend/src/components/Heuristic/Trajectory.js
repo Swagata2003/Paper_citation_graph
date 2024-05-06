@@ -40,7 +40,8 @@ export default function Trajectory(props) {
     const firstAuthorName = extractFirstAuthorName(authorsString);
     const [firstAuthorTitle, ...rest] = firstAuthorName.split(' '); // Split the first author's name by space
     const restOfName = rest.join(' ');
-    return restOfName;
+    if(restOfName!=null)return restOfName;
+    return "";
   }
   useEffect(() => {
     const fetchCitationCount = async (str) => {

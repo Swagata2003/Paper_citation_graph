@@ -13,6 +13,7 @@ import Referencetree from './Referencetree';
 import Citationtree from './Citationtree';
 import Pagerank from './Pagerank';
 import Loader from './Loader';
+import Similarity from './Similarity';
 // import { createDataset } from 'myDatasetLibrary';
 
 export default function Paper() {
@@ -25,7 +26,8 @@ export default function Paper() {
     const [isLoading, setIsLoading] = useState(true);
     const [selectedOption, setSelectedOption] = useState('layer');
 
-
+    let barchart1=null;
+    let barchart2=null;
     const minyr = 1992;
     const maxyr = 2003;
 
@@ -66,7 +68,10 @@ export default function Paper() {
             } catch (error) {
                 console.error('Error:', error);
             }finally {
-                setIsLoading(false); // Hide loader
+                
+                    setIsLoading(false); // Hide loader
+                
+                
             }
         };
 
@@ -90,7 +95,7 @@ export default function Paper() {
                      flexDirection: 'row',
                      justifyContent:'center',
                      
-                     gap:'2em',
+                     gap:'2.25em',
                     top: '0em',
                     right: '10px',
                     backgroundColor: '#fff',
@@ -220,12 +225,12 @@ export default function Paper() {
                             className="form-check-input"
                             type="radio"
                             name="graphType"
-                            id="venueRadio"
-                            value="layer"
-                            checked={selectedOption === 'venue'}
+                            id="similarityRadio"
+                            value="similarity"
+                            checked={selectedOption === 'similarity'}
                             onChange={handleRadioChange}
                         />
-                        <label className="form-check-label" htmlFor="venueRadio">
+                        <label className="form-check-label" htmlFor="similarityRadio">
                         Similarity Score
                         </label>
                     </div>
@@ -309,18 +314,19 @@ export default function Paper() {
                     
                     
                 </div>
-                <div className="graphbox" style={{ flex: 3, position: 'relative' }}>
-                    {selectedOption === 'layer' && <Layercitaiongraph paperData={paperData} info={info} updateInfo={updateInfo} />}
-                    {selectedOption === 'year' && <Yearwise paperData={paperData} info={info} updateInfo={updateInfo} />}
-                    {selectedOption === 'citationCount' && <Citationcount paperData={paperData} info={info} updateInfo={updateInfo} />}
-                    {selectedOption === 'range' && <Range paperData={paperData} info={info} updateInfo={updateInfo} />}
-                    {selectedOption === 'trajectory' && <Trajectory paperData={paperData} info={info} updateInfo={updateInfo} />}
-                    {selectedOption === 'referencetree' && <Referencetree paperData={paperData} info={info} updateInfo={updateInfo} />}
-                    {selectedOption === 'citationtree' && <Citationtree paperData={paperData} info={info} updateInfo={updateInfo} />}
-                    {selectedOption === 'pagerank' && <Pagerank paperData={paperData} info={info} updateInfo={updateInfo} />}
+                
+    <div className="graphbox" style={{ flex: 3, position: 'relative' }}>
+        {selectedOption === 'layer' && <Layercitaiongraph paperData={paperData} info={info} updateInfo={updateInfo} />}
+        {selectedOption === 'year' && <Yearwise paperData={paperData} info={info} updateInfo={updateInfo} barchart1={barchart1}/>}
+        {selectedOption === 'citationCount' && <Citationcount paperData={paperData} info={info} updateInfo={updateInfo} barchart2={barchart2}/>}
+        {selectedOption === 'range' && <Range paperData={paperData} info={info} updateInfo={updateInfo} />}
+        {selectedOption === 'trajectory' && <Trajectory paperData={paperData} info={info} updateInfo={updateInfo} />}
+        {selectedOption === 'referencetree' && <Referencetree paperData={paperData} info={info} updateInfo={updateInfo} />}
+        {selectedOption === 'citationtree' && <Citationtree paperData={paperData} info={info} updateInfo={updateInfo} />}
+        {selectedOption === 'pagerank' && <Pagerank paperData={paperData} info={info} updateInfo={updateInfo} />}
+        {selectedOption === 'similarity' && <Similarity paperData={paperData} info={info} updateInfo={updateInfo} />}
+    </div>
 
-
-                </div>
 
 
                 <div className="infobox" style={{ flex: 2, display: 'flex', flexDirection: 'column', margin: '1em', gap: '1em' }}>

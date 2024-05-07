@@ -198,7 +198,7 @@ export default function Pagerank(props) {
         <div>
             <div id="graph-container" style={{ border: '1px solid black', height: '32em', marginTop: '1em' }}></div>
             <div style={{ marginTop: '0.5em', width: '100%' }}>
-                <label htmlFor="maxNodesSlider">Max Nodes:</label>
+                <label htmlFor="maxNodesSlider">Age rescaled pagerank:</label>
                 <input
                     type="range"
                     id="maxNodesSlider"
@@ -206,7 +206,7 @@ export default function Pagerank(props) {
                     max="500" // Set max to the maximum citation count among all PIDs if citcount is not empty, otherwise set it to 100
                     value={mincount}
                     onChange={handleSliderChange}
-                    style={{ width: '80%' }}
+                    style={{ width: '70%' }}
                 />
                 <span>{mincount}</span>
             </div>

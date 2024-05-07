@@ -5,10 +5,11 @@ import { Network } from 'vis-network/peer';
 
 
 export default function Similarity(props) {
-    const { paperData, info,updateInfo } = props;
+    const { paperData, info, updateInfo } = props;
     const [graphData, setGraphData] = useState(null);
     const host = "https://papercitation-backend4.onrender.com";
     const [similarity, setsimilarity] = useState({});
+    const [similarslider, setslider] = useState(0.00)
     const getYearFromPid = (pid) => {
         if (pid[0] === '9') {
             return '19' + pid.substring(0, 2);
@@ -59,7 +60,7 @@ export default function Similarity(props) {
             if (pids[pids.length - 1] === ',') {
                 pids = pids.slice(0, -1);
             }
-            
+
             fetchCitationCount(seed_pid, pids);
         }
     }, [paperData]);
@@ -114,19 +115,23 @@ export default function Similarity(props) {
 
             const queryNode = {
                 id: paperData.query.pid,
-                label: author(paperData.query.authors) + " " + getYearFromPid(paperData.query.pid),
+                label: author(paperData.query.authors) + " " + getYearFromPid(paperData.query.pid) ,
                 label2: paperData.query.pid,
                 year: getYearFromPid(paperData.query.pid),
             };
 
             let nodes = new DataSet([...refNodes.get(), ...citNodes.get(), ...(queryNode ? [queryNode] : [])]);
-
-
+            if(similarslider!=0){
+                nodes = new DataSet(nodes.get().filter(node=>parseFloat(similarity[node.id]).toFixed(2)==similarslider|| node.id === queryNode.id));
+            }
+            console.log(nodes.get())
             const edges = new DataSet(nodes.get().filter(node => node.id !== queryNode.id).map(node => ({ from: node.id, to: queryNode.id })));
 
-            setGraphData({ nodes, queryNode, edges });
+            setGraphData({ nodes,queryNode,edges });
+
+           
         }
-    }, [similarity]);
+    }, [similarity,similarslider]);
 
     useEffect(() => {
         if (graphData) {
@@ -209,12 +214,28 @@ export default function Similarity(props) {
             });
         }
     }, [graphData]);
-
+    const handleSliderChange = (event) => {
+        setslider(parseFloat(event.target.value));
+    };
 
     return (
         <div>
-
             <div id="graph-container" style={{ border: '1px solid black', height: '32em', marginTop: '1em' }}></div>
+            <div style={{ marginTop: '0.5em', width: '100%' }}>
+                <label htmlFor="maxNodesSlider">Similarity Score:&nbsp;</label>
+                <input
+                    type="range"
+                    id="maxNodesSlider"
+                    min="0.9"
+                    max="0.99"
+                    step="0.01" 
+                    value={similarslider.toFixed(2)}
+                    onChange={handleSliderChange}
+                    style={{ width: '72%',marginTop:'0.5em' }}
+                />
+                <span>&nbsp;{similarslider.toFixed(2)}</span>
+            </div>
         </div>
-    )
+    );
+    
 }
